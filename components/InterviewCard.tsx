@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { getRandomInterviewCover } from '@/lib/utils';
 import { Button } from './ui/button';
 import Link from 'next/link';
+import TechIcons from './TechIcons';
 
 
 const InterviewCard = async ({
@@ -27,8 +28,8 @@ const InterviewCard = async ({
     <div className='card-border w-[360px] max-sm:w-full min-h-96'>
       <div className='card-interview'>
         <div>
-          <div className='absolute top-0 right-0 w-fit px-4 py-2 rounded-bl-lg'>
-            <p className='badge-text'>{normalizedType}</p>
+          <div className='absolute top-0 right-0 w-fit px-4 py-2 rounded-bl-lg bg-cyan-600'>
+            <p className='badge-text text-light-100'>{normalizedType}</p>
           </div>
           <Image
             src={getRandomInterviewCover()}
@@ -59,7 +60,8 @@ const InterviewCard = async ({
               "You haven't taken this interview yet. Take it now to improve your skills."}
           </p>
         </div>
-        <div className='flex justify-between'>
+        <div className='flex flex-row justify-between'>
+          <TechIcons techStack={techstack} />
           <Button className="btn-primary">
               <Link
                 href={

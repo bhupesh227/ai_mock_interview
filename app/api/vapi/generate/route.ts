@@ -1,8 +1,8 @@
 
-import {generateText} from "ai";
-import {google} from "@ai-sdk/google"
+
 import { getRandomInterviewCover } from "@/lib/utils";
 import { db } from "@/firebase/admin";
+import { GoogleGenAI } from "@google/genai";
 
 export async function GET() {
     return Response.json({ success: true, data: "Thank you!" }, { status: 200 });
@@ -10,11 +10,11 @@ export async function GET() {
 
 export async function POST(request: Request) {
     const { type, role, level, techstack, amount, userid } = await request.json();
-
+    const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY!});
     try {
-        const {text:questions} = await generateText({
-            model: google('gemini-2.0-flash-001'),
-            prompt: `Prepare questions for a job interview.
+        const {text:questions} = await ai.models.generateContent({
+            model: "gemini-2.0-flash-lite-001",
+            contents: `Prepare questions for a job interview.
                         The job role is ${role}.
                         The job experience level is ${level}.
                         The tech stack used in the job is: ${techstack}.

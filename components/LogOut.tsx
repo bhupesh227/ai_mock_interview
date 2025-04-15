@@ -27,7 +27,7 @@ const LogOut = () => {
       size={undefined}
       disabled={isLoading}
       title='Log Out'
-      className='text-white bg-red-400 hover:text-red-600 cursor-pointer gap-2 px-4 py-2'
+      className='text-white bg-red-400 hover:text-red-600 cursor-pointer px-2 py-1 md:px-4 md:py-2'
       onClick={handleLogOut}
     >
         LogOut

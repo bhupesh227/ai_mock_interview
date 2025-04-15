@@ -302,7 +302,7 @@
 }
 
 @utility pattern {
-  @apply bg-[url('/382b794d-8721-44f3-9571-4169a8130bd1.jpg')] bg-top bg-no-repeat bg-cover ;
+  @apply bg-[url('/pattern.webp')] bg-top bg-no-repeat bg-cover ;
 }
 @utility login-pattern {
   @apply bg-[url('/aibg.jpg')] bg-bottom bg-no-repeat bg-cover;

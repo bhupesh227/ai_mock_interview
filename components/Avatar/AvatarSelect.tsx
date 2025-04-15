@@ -5,7 +5,7 @@ import { updateUserAvatar } from '@/lib/actions/auth.action';
 import { toast } from 'sonner';
 import Image from 'next/image';
 import AvatarImage from './AvatarImage';
-import { PlusCircle } from "lucide-react";
+import { HandMetal  } from "lucide-react";
 
 interface AvatarSelectProps {
     currentAvatar: string;
@@ -21,7 +21,6 @@ const AvatarSelect = ({ currentAvatar, userId, userName }:AvatarSelectProps) => 
         setAvatar(newAvatar);
         setIsModalOpen(false);
         
-        // Update the user's avatar in the database
         try {
           const result = await updateUserAvatar({
             userId,
@@ -29,7 +28,7 @@ const AvatarSelect = ({ currentAvatar, userId, userName }:AvatarSelectProps) => 
           });
           
           if (result.success) {
-            toast.success("Your avatar updated successfully!");
+            toast.success("Your Avatar updated successfully!");
           } else {
             toast.error("Failed to update avatar..");
           }
@@ -58,7 +57,7 @@ const AvatarSelect = ({ currentAvatar, userId, userName }:AvatarSelectProps) => 
                     
                     {isHovering && (
                         <div className="absolute inset-0 bg-dark-200/70 rounded-full flex items-center justify-center">
-                            <PlusCircle className="w-6 h-6 text-primary-200" />
+                            <HandMetal  className="w-6 h-6 text-primary-200" />
                         </div>
                     )}
                     
@@ -69,7 +68,7 @@ const AvatarSelect = ({ currentAvatar, userId, userName }:AvatarSelectProps) => 
                 </div>
             </div>
 
-            {/* Avatar Selection Modal */}
+            
             {isModalOpen && (
                 <AvatarImage 
                     currentAvatar={avatar}

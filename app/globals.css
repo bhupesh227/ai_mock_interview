@@ -261,7 +261,7 @@
   }
 
   .root-layout {
-    @apply flex mx-auto max-w-7xl flex-col gap-12 my-12 px-16 max-sm:px-4 max-sm:my-8;
+    @apply flex mx-auto max-w-7xl flex-col gap-12 mt-12 px-16 max-sm:px-4 max-sm:my-8;
   }
 
   .card-cta {
@@ -302,7 +302,10 @@
 }
 
 @utility pattern {
-  @apply bg-[url('/aibg.jpg')] bg-top bg-no-repeat bg-auto ;
+  @apply bg-[url('/382b794d-8721-44f3-9571-4169a8130bd1.jpg')] bg-top bg-no-repeat bg-cover ;
+}
+@utility login-pattern {
+  @apply bg-[url('/aibg.jpg')] bg-bottom bg-no-repeat bg-cover;
 }
 
 @utility blue-gradient-dark {

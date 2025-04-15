@@ -9,7 +9,12 @@ const layout = async({children}:{children:ReactNode}) => {
     redirect("/");
   }
   return (
-    <div className='auth-layout'>{children}</div>
+    <div className='login-pattern'>
+      <div className='auth-layout '>
+        {children}
+      </div>
+    </div>
+    
   )
 }
 

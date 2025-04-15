@@ -2,43 +2,61 @@
 
 import { auth, db } from "@/firebase/admin";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 
 const SESSION_DURATION_FOUR_DAYS = 60 * 60 * 24 * 4;
 
 export async function signUp(params: SignUpParams) {
-    const { uid, name, email } = params;
+    const { uid, name, email,password } = params;
     try {
         const userRecord = await db.collection("users").doc(uid).get();
-        if (userRecord.exists)
+        if (userRecord.exists){
+          //google signin
+          if(!password){
             return {
-                success: false,
-                message: "User already exists. Please sign in.",
+              success: true,
+              message: "Google account already exists. Proceeding with sign-in.",
             };
+          }
+          return {
+            success: false,
+            message: "User already exists. Please sign in.",
+          };
+        }
 
-          
-            await db.collection("users").doc(uid).set({
-            name,
-            email,
-            
+        await db.collection("users").doc(uid).set({
+          name,
+          email,
+          createdAt: new Date().toISOString(),
+          authProvider: password ? "email" : "google",
         });
 
         return {
             success: true,
-            message: "Account created successfully. Please sign in.",
+            message: password 
+              ?"Account created successfully. Please sign in."
+              :"Google account created successfully. Proceeding with sign-in.",
         };
-    } catch (error:any) {
-        console.error("Error signing up user:", error);
-        if(error.code === 'auth/email-already-exists') {
-            return{
-                success: false,
-                message: 'Email already exists'
-            }
-        }
-        return{
-            success: false,
-            message: 'Error signing up user'
-        }
+    } catch (error:unknown) {
+
+      console.error("Error signing up user:", error);
+      if((error as {code?:string}).code === 'auth/email-already-exists') {
+          return{
+              success: false,
+              message: 'Email already exists'
+          }
+      }
+      if (error instanceof Error && error.message.includes("DECODER routines")) {
+        return {
+          success: false,
+          message: "Database connection error. Please try again later.",
+        };
+      }
+      return{
+          success: false,
+          message: 'Error signing up user',
+      };
     }
 }
 
@@ -70,9 +88,17 @@ export async function signIn(params: SignInParams) {
           success: false,
           message: "User does not exist. Create an account.",
         };
+
+      //const firestoreUser = await db.collection("users").doc(userRecord.uid).get();
+      //const userData = firestoreUser.data();
+      //const isGoogleUser = userData?.authProvider === "google";
   
       await setSessionCookie(idToken);
-    } catch (error: any) {
+      return {
+        success: true,
+        message: "Signed in successfully.",
+      };
+    } catch (error: unknown) {
       console.log(error);
       return {
         success: false,
@@ -122,4 +148,12 @@ export async function LogOutSession() {
     path: "/",
     sameSite: "lax",
   });
+}
+
+export async function requireUser(): Promise<User> {
+  const user = await getCurrentUser();
+  if (!user) {
+    redirect("/sign-in"); 
+  }
+  return user;
 }

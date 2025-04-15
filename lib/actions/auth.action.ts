@@ -24,12 +24,13 @@ export async function signUp(params: SignUpParams) {
             message: "User already exists. Please sign in.",
           };
         }
-
+        const photoUrl = "/avatardefault.jpg";
         await db.collection("users").doc(uid).set({
           name,
           email,
           createdAt: new Date().toISOString(),
           authProvider: password ? "email" : "google",
+          photoUrl: photoUrl,
         });
 
         return {
@@ -156,4 +157,25 @@ export async function requireUser(): Promise<User> {
     redirect("/sign-in"); 
   }
   return user;
+}
+
+export async function updateUserAvatar({ 
+  userId, 
+  photoUrl 
+}: { 
+  userId: string; 
+  photoUrl: string;
+}) {
+  try {
+    const userRef = db.collection("users").doc(userId);
+    
+    await userRef.update({
+      photoUrl
+    });
+    
+    return { success: true, message: "Your avatar was updated successfully!"};
+  } catch (error) {
+    console.error("Error updating user avatar:", error);
+    return { success: false, error };
+  }
 }

@@ -23,6 +23,8 @@ const LogOut = () => {
     }
   return (
     <Button
+      variant={undefined}
+      size={undefined}
       disabled={isLoading}
       title='Log Out'
       className='text-white bg-red-400 hover:text-red-600 cursor-pointer gap-2 px-4 py-2'

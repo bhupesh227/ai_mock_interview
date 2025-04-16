@@ -1,13 +1,14 @@
 
 import React from 'react'
 import Image from 'next/image'
-import Link from 'next/link'
-import { Button } from '@/components/ui/button'
 import InterviewCard from '@/components/InterviewCard'
 import {  requireUser} from '@/lib/actions/auth.action'
 import { getInterviewsByUserId, getLatestInterviews } from '@/lib/actions/general.action'
 import Animation from '@/components/Animation'
 import AnimatedButton from '@/components/AnimatedButton'
+import LatestInterviews from '@/components/LatestInterviews'
+import ClientInterviewCard from '@/components/ClientInterviewCard'
+
 
 
 
@@ -19,6 +20,34 @@ const page = async() => {
   ]);
   const hasPastInterviews = (userInterviews?.length ?? 0) > 0;
   const hasUpcomingInterviews = (latestInterview?.length ??0) > 0;
+
+  const renderedInterviewCards = await Promise.all(
+    (latestInterview || []).map(async (interview) => {
+      const interviewCard = await (
+        <InterviewCard
+          key={interview.id}
+          userId={user?.id}
+          id={interview.id}
+          role={interview.role}
+          type={interview.type}
+          techstack={interview.techstack}
+          createdAt={interview.createdAt}
+          coverImage={interview.coverImage}
+          level={interview.level}
+          questions={interview.questions}
+        />
+      );
+      
+      return (
+        <ClientInterviewCard
+          key={interview.id}
+          interview={interview}
+          userId={user?.id}
+          interviewCard={interviewCard}
+        />
+      );
+    })
+  );
   return (
     <>
       <section className='card-cta flex-col md:flex-row items-center'>
@@ -32,9 +61,9 @@ const page = async() => {
             </p>
           </Animation>
           
-            <AnimatedButton href='/interview' >
-              Create an Interview
-            </AnimatedButton>
+          <AnimatedButton href='/interview' >
+            Create an Interview
+          </AnimatedButton>
           
         </div>
         <Image
@@ -46,25 +75,25 @@ const page = async() => {
         />
       </section>
       <section className='flex flex-col gap-6 mt-8'>
-        <h2>Your Interview</h2>
+        <h2>Your created Interviews @<span className='text-primary-200'>{user.name}</span></h2>
+        
         <div className='interviews-section'>
           { hasPastInterviews ?(
               userInterviews?.map((interview) => (
                 <InterviewCard {...interview} key={interview.id}/>
               ))
-            ): (<p>You haven&apos;t taken any interview</p>
+            ): (<p>You haven&apos;t created any interviews yet.</p>
             )
           }  
         </div>
       </section>
       <section className='flex flex-col gap-6 mt-8'>
-        <h2>Take an Interview</h2>
+        <h2>More Interviews {latestInterview && latestInterview.length>0 &&
+          <span className='text-primary-100'>({latestInterview.length})</span>}</h2>
         <div className='interviews-section'>
           { hasUpcomingInterviews ?(
-              latestInterview?.map((interview) => (
-                <InterviewCard {...interview} key={interview.id}/>
-              ))
-            ): (<p>There are no upcoming interviews</p>
+                <LatestInterviews renderedCards={renderedInterviewCards}/>
+            ): (<p>There are no upcoming interviews available.</p>
             )
           }
         </div>

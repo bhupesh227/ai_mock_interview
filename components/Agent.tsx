@@ -43,6 +43,20 @@ const Agent = ({
         vapi.stop();
     },[]);
 
+    // Handle inactivity timeout
+    useEffect(() => {
+        if(callStatus !== CallStatus.ACTIVE) return;
+
+        const inactivityTimer = setInterval(() => {
+            const now = Date.now();
+            if (now - lastActivityTimestamp > INACTIVITY_TIMEOUT) {
+              console.log("Inactivity timeout reached, ending call");
+              handleDisconnect();
+            }
+        }, 5000);
+        return () => clearInterval(inactivityTimer);
+    },[callStatus, lastActivityTimestamp, handleDisconnect,INACTIVITY_TIMEOUT]);
+
     useEffect(()=>{
         const onCallStart = () => { 
             setCallStatus(CallStatus.ACTIVE);
@@ -82,7 +96,7 @@ const Agent = ({
                       
                       setTimeout(() => {
                         handleDisconnect();
-                      }, 10000); 
+                      }, 15000); 
                     }
                 }
             }
@@ -115,39 +129,39 @@ const Agent = ({
         };
     },[currentQuestionIndex, totalQuestions, handleDisconnect, questions]);
 
-    const handleGenerateFeedback = async (messages: SavedMessage[]) => {
-        toast.loading("Generating feedback...",{
-            description: "This may take a few seconds",
-            duration: 2000,
-        });
-        const { success, feedbackId: id } = await createFeedback({
-            interviewId: interviewId!,
-            userId: userId!,
-            transcript: messages,
-            feedbackId,
-        });
-
-        if (success && id) {
-            toast.success("Feedback generated successfully", {
-                description: "You can view the feedback now",
-                duration: 2000,
-            });
-            router.push(`/interview/${interviewId}/feedback`);
-        } else {
-            console.log("Error saving feedback");
-            toast.error("Error generating feedback", {
-                description: "Please try again",
-                duration: 2000,
-            });
-            router.push("/");
-        }
-    }
 
     // Han messages and call status changes
     useEffect(() => {
         if (messages.length > 0) {
             const latestMessage = messages[messages.length - 1].content;
             setLatestMessage(latestMessage);
+        }
+        const handleGenerateFeedback = async (messages: SavedMessage[]) => {
+            toast.loading("Generating feedback...",{
+                description: "This may take a few seconds",
+                duration: 2000,
+            });
+            const { success, feedbackId: id } = await createFeedback({
+                interviewId: interviewId!,
+                userId: userId!,
+                transcript: messages,
+                feedbackId,
+            });
+    
+            if (success && id) {
+                toast.success("Feedback generated successfully", {
+                    description: "You can view the feedback now",
+                    duration: 2000,
+                });
+                router.push(`/interview/${interviewId}/feedback`);
+            } else {
+                console.log("Error saving feedback");
+                toast.error("Error generating feedback", {
+                    description: "Please try again",
+                    duration: 2000,
+                });
+                router.push("/");
+            }
         }
         if (callStatus === CallStatus.FINISHED) {
             if (type === "generate") {
@@ -164,7 +178,9 @@ const Agent = ({
     const  handleCall = async () => {
         setCallStatus(CallStatus.CONNECTING);
         if(type === "generate") {
-            toast.loading("Generating interview...");
+            toast.loading("Generating interview...",{
+                duration: 2000,
+            });
 
             await vapi.start(process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID!,{
                 variableValues:{
@@ -187,21 +203,7 @@ const Agent = ({
         }
     }
 
-    // Handle inactivity timeout
-    useEffect(() => {
-        if(callStatus !== CallStatus.ACTIVE) return;
-
-        const inactivityTimer = setInterval(() => {
-            const now = Date.now();
-            if (now - lastActivityTimestamp > INACTIVITY_TIMEOUT) {
-              console.log("Inactivity timeout reached, ending call");
-              handleDisconnect();
-            }
-        }, 5000);
-        return () => clearInterval(inactivityTimer);
-    },[callStatus, lastActivityTimestamp, handleDisconnect,INACTIVITY_TIMEOUT]);
-
-    
+       
   return (
     <>
         <div className="call-view">

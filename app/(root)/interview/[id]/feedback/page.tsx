@@ -20,17 +20,16 @@ const page = async({params}: RouteParams) => {
 
   
   return (
-    <section className="section-feedback">
+    <section className="section-feedback bg-stone-900/50 px-4 lg:px-8 py-3 lg:py-8 rounded-3xl">
     <div className="flex flex-row justify-center">
-      <h1 className="text-4xl font-semibold text-amber-200">
+      <h1 className="text-4xl font-semibold text-amber-200 text-center">
         Feedback on the Interview -{" "}
         <span className="capitalize">{interview.role}</span> Interview
       </h1>
     </div>
 
     <div className="flex flex-row justify-center ">
-      <div className="flex flex-row gap-5">
-        {/* Overall Impression */}
+      <div className="flex flex-row max-sm:flex-col max-sm:items-center gap-5">
         <div className="flex flex-row gap-2 items-center">
           <Image src="/star.svg" width={22} height={22} alt="star" />
           <p>
@@ -41,8 +40,6 @@ const page = async({params}: RouteParams) => {
             /100
           </p>
         </div>
-
-        {/* Date */}
         <div className="flex flex-row gap-2">
           <Image src="/calendar.svg" width={22} height={22} alt="calendar" />
           <p>
@@ -53,12 +50,10 @@ const page = async({params}: RouteParams) => {
         </div>
       </div>
     </div>
-
     <hr />
 
     <p>{feedback?.finalAssessment}</p>
 
-  
     <div className="flex flex-col gap-4">
       <h2 className='text-amber-100'>Breakdown of the Interview:</h2>
       {feedback?.categoryScores?.map((category, index) => (
@@ -97,7 +92,6 @@ const page = async({params}: RouteParams) => {
           </p>
         </Link>
       </Button>
-
       <Button className="btn-primary flex-1 ">
         <Link
           href={`/interview/${id}`}

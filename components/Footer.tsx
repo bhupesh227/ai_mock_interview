@@ -5,8 +5,8 @@ import Link from 'next/link'
 const Footer = () => {
     const currentYear = new Date().getFullYear();
   return (
-    <footer className="mt-6 p-4 border-t border-dark-200">
-        <div className="flex justify-between items-center">
+    <footer className="mt-6 sm:p-4 border-t border-dark-200">
+        <div className="flex justify-between items-center max-sm:flex-col-reverse">
             <p className="text-blue-400 text-semibold">
             © {currentYear} Bhupesh Bora. All rights reserved.
             </p>

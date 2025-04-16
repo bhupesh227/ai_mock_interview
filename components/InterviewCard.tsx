@@ -11,7 +11,7 @@ import { MessageCircleQuestion } from 'lucide-react';
 
 
 const InterviewCard = async ({
-  id,
+  interviewId,
   userId,
   role,
   type,
@@ -22,8 +22,8 @@ const InterviewCard = async ({
   coverImage,
 }: InterviewCardProps)=> {
 
-  const feedback = userId && id ? await getFeedbackByInterviewId({
-    interviewId : id,
+  const feedback = userId && interviewId ? await getFeedbackByInterviewId({
+    interviewId ,
     userId,
   }): null;
 
@@ -108,8 +108,8 @@ const InterviewCard = async ({
               <Link
                 href={
                   feedback
-                    ? `/interview/${id}/feedback`
-                    : `/interview/${id}`
+                    ? `/interview/${interviewId}/feedback`
+                    : `/interview/${interviewId}`
                 }
               >
                 {feedback ? "Check Feedback" : "Start Interview"}

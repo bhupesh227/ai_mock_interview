@@ -137,10 +137,6 @@ const Agent = ({
             setLatestMessage(latestMessage);
         }
         const handleGenerateFeedback = async (messages: SavedMessage[]) => {
-            toast.loading("Generating feedback...",{
-                description: "This may take a few seconds",
-                duration: 2000,
-            });
             const { success, feedbackId: id } = await createFeedback({
                 interviewId: interviewId!,
                 userId: userId!,
@@ -178,10 +174,7 @@ const Agent = ({
     const  handleCall = async () => {
         setCallStatus(CallStatus.CONNECTING);
         if(type === "generate") {
-            toast.loading("Generating interview...",{
-                duration: 2000,
-            });
-
+        
             await vapi.start(process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID!,{
                 variableValues:{
                     username : userName,
@@ -252,7 +245,7 @@ const Agent = ({
 
         <div className="w-full flex justify-center">
             {callStatus !== "ACTIVE" ? (
-                <button className="relative btn-call" onClick={handleCall}>
+                <button className="relative btn-call" onClick={() => handleCall()}>
                     <span
                         className={cn(
                             "absolute animate-ping rounded-full opacity-75",
@@ -267,7 +260,7 @@ const Agent = ({
                     </span>
                 </button>
             ) : (
-                <button className="btn-disconnect cursor-pointer" onClick={handleDisconnect} >
+                <button className="btn-disconnect cursor-pointer" onClick={() => handleDisconnect()}>
                     End
                 </button>
             )}

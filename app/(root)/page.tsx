@@ -15,8 +15,8 @@ import ClientInterviewCard from '@/components/ClientInterviewCard'
 const page = async() => {
   const user = await requireUser();
   const [userInterviews, latestInterview] = await Promise.all([
-    getInterviewsByUserId(user.id),
-    getLatestInterviews({ userId: user.id }),
+    getInterviewsByUserId(user?.id || ''),
+    getLatestInterviews({ userId: user?.id || '' }),
   ]);
   const hasPastInterviews = (userInterviews?.length ?? 0) > 0;
   const hasUpcomingInterviews = (latestInterview?.length ??0) > 0;
@@ -27,7 +27,7 @@ const page = async() => {
         <InterviewCard
           key={interview.id}
           userId={user?.id}
-          id={interview.id}
+          interviewId={interview.id}
           role={interview.role}
           type={interview.type}
           techstack={interview.techstack}
@@ -80,7 +80,18 @@ const page = async() => {
         <div className='interviews-section'>
           { hasPastInterviews ?(
               userInterviews?.map((interview) => (
-                <InterviewCard {...interview} key={interview.id}/>
+                <InterviewCard 
+                key={interview.id}
+                userId={user?.id}
+                interviewId={interview.id}
+                role={interview.role}
+                type={interview.type}
+                techstack={interview.techstack}
+                createdAt={interview.createdAt}
+                coverImage={interview.coverImage}
+                level={interview.level}
+                questions={interview.questions}
+                />
               ))
             ): (<p>You haven&apos;t created any interviews yet.</p>
             )
@@ -90,13 +101,13 @@ const page = async() => {
       <section className='flex flex-col gap-6 mt-8'>
         <h2>More Interviews {latestInterview && latestInterview.length>0 &&
           <span className='text-primary-100'>({latestInterview.length})</span>}</h2>
-        <div className='interviews-section'>
+        
           { hasUpcomingInterviews ?(
                 <LatestInterviews renderedCards={renderedInterviewCards}/>
             ): (<p>There are no upcoming interviews available.</p>
             )
           }
-        </div>
+        
       </section>
     </>
   )

@@ -11,7 +11,7 @@ interface LatestInterviewsListProps {
 
 export default function LatestInterviews ({renderedCards}:LatestInterviewsListProps)  {
   
-    const interviewsPerPage = 6;
+    const interviewsPerPage = 3;
     const [itemsToShow, setItemsToShow] = useState(interviewsPerPage);
     const incrementBy = 3;
 

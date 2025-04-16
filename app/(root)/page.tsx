@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button'
 import InterviewCard from '@/components/InterviewCard'
 import {  requireUser} from '@/lib/actions/auth.action'
 import { getInterviewsByUserId, getLatestInterviews } from '@/lib/actions/general.action'
+import Animation from '@/components/Animation'
+import AnimatedButton from '@/components/AnimatedButton'
 
 
 
@@ -15,28 +17,32 @@ const page = async() => {
     getInterviewsByUserId(user.id),
     getLatestInterviews({ userId: user.id }),
   ]);
-  const hasPastInterviews = userInterviews?.length > 0;
-  const hasUpcomingInterviews = latestInterview?.length! > 0;
+  const hasPastInterviews = (userInterviews?.length ?? 0) > 0;
+  const hasUpcomingInterviews = (latestInterview?.length ??0) > 0;
   return (
     <>
-      <section className='card-cta flex-wrap'>
-        <div className='flex flex-col gap-6 max-w-lg'>
-          <h2>Honor Your skills & become a good communicator</h2>
-          <p className='text-lg'>Give Interview Questions & know how good did you performed</p>
-          <div className='flex max-md:justify-center gap-4'>
-            <Button asChild className='btn-primary max-sm:w-full'>
-              <Link href='/interview'>
-                Start Mock Interview
-              </Link>
-            </Button>
-          </div>
+      <section className='card-cta flex-col md:flex-row items-center'>
+        <div className='flex flex-col gap-6 max-w-lg mt-6 sm:mt-0'>
+          <Animation delay={0.2}>
+            <h2 className='max-md:text-center'>Hone your skills and become a <span className='text-orange-300'>Confident Communicator</span></h2>
+          </Animation>
+          <Animation delay={0.6}>
+            <p className='text-lg max-md:text-center'>Practice interview questions on Frontend ,Backend etc.<br/>
+              Get personalized feedback and tips to improve your performance.
+            </p>
+          </Animation>
+          
+            <AnimatedButton href='/interview' >
+              Create an Interview
+            </AnimatedButton>
+          
         </div>
         <Image
           src='/robotinterview.png'
-          alt='hero'
+          alt='robot image'
           width={400}
           height={400}
-          className='max-sm:hidden'
+          className='max-md:mt-8 max-md:w-[300px] max-md:h-[250px] '
         />
       </section>
       <section className='flex flex-col gap-6 mt-8'>

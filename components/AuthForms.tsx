@@ -29,7 +29,7 @@ const AuthForms = ({type}:{type:FormType}) => {
   const router = useRouter();
   const formSchema = authFormSchema(type); 
   const isSignUp = type === "sign-up"
-  //const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
       resolver: zodResolver(formSchema),
       defaultValues: {
@@ -82,12 +82,11 @@ const AuthForms = ({type}:{type:FormType}) => {
     }
   }
 
- /* const handleGoogleSignIn = async () => {
+  const handleGoogleSignIn = async () => {
     try {
         setIsGoogleLoading(true);
         const provider = new GoogleAuthProvider();
         
-        // Add these settings to help with the sign-in experience
         provider.setCustomParameters({
             prompt: 'select_account'
         });
@@ -95,14 +94,15 @@ const AuthForms = ({type}:{type:FormType}) => {
         try {
             const userCredential = await signInWithPopup(auth, provider);
             
-            // Get user info
             const user = userCredential.user;
-            
-            // Get the ID token
+
             const idToken = await user.getIdToken();
 
-            
-            // Always try to create/update the user record in your database
+            if (!idToken) {
+                toast.error('Error signing in with Google');
+                setIsGoogleLoading(false);
+                return;
+            }
             const signUpResult = await signUp({
                 uid: user.uid,
                 name: user.displayName || 'User',
@@ -116,7 +116,7 @@ const AuthForms = ({type}:{type:FormType}) => {
                 return;
             }
             
-            // Sign in the user with your backend
+            
             const signInResult = await signIn({
                 email: user.email || '',
                 idToken
@@ -130,7 +130,6 @@ const AuthForms = ({type}:{type:FormType}) => {
             
             toast.success('Signed in successfully with Google');
             
-            // Use router.replace instead of push to avoid navigation issues
             router.replace('/');
         } catch (popupError: unknown) {
             console.error("Popup error:", popupError);
@@ -145,8 +144,7 @@ const AuthForms = ({type}:{type:FormType}) => {
         }
     } catch (error: unknown) {
         console.error('Google sign-in error:', error);
-        
-        // Handle specific error cases
+
         if ((error as { code?: string }).code === 'auth/popup-closed-by-user') {
             toast.error('Sign-in cancelled. Please try again.');
         } else if ((error as { code?: string }).code === 'auth/popup-blocked') {
@@ -158,7 +156,7 @@ const AuthForms = ({type}:{type:FormType}) => {
         setIsGoogleLoading(false);
     }
 };
-*/
+
       
   return (
     <div className='card-border md:w-[450px]'>
@@ -211,11 +209,11 @@ const AuthForms = ({type}:{type:FormType}) => {
                   </Button>
               </form>
           </Form>
-          <div className="relative flex items-center justify-center mt-2 mb-4">
+          <div className="relative flex items-center justify-center mt-2 mb-1">
               <div className="absolute border-t border-gray-700 w-full"></div>
               <span className="relative px-4 bg-gray-700 text-light-300 text-sm rounded-lg">or</span>
           </div>
-          {/*
+          
           <Button 
               type="button"
               variant="outline"
@@ -235,7 +233,7 @@ const AuthForms = ({type}:{type:FormType}) => {
               )}
               <span>{isSignUp ? "Sign up with Google" : "Sign in with Google"}</span>
             </Button>
-          */}
+          
 
           <p className='text-center text-teal-400'>
             {isSignUp ? "Already have an account?" : "Don't have an account?"} 

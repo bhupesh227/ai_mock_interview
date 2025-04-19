@@ -24,7 +24,18 @@ export async function signUp(params: SignUpParams) {
             message: "User already exists. Please sign in.",
           };
         }
-        const photoUrl = "/avatardefault.jpg";
+        let photoUrl = "/avatardefault.jpg";
+        if (!password) {
+          try {
+            const authUser = await auth.getUser(uid);
+            if (authUser && authUser.photoURL) {
+              photoUrl = authUser.photoURL;
+            }
+          } catch (error) {
+            console.error("Error fetching user photo URL:", error);
+          }
+        }
+
         await db.collection("users").doc(uid).set({
           name,
           email,
@@ -90,10 +101,7 @@ export async function signIn(params: SignInParams) {
           message: "User does not exist. Create an account.",
         };
 
-      //const firestoreUser = await db.collection("users").doc(userRecord.uid).get();
-      //const userData = firestoreUser.data();
-      //const isGoogleUser = userData?.authProvider === "google";
-  
+
       await setSessionCookie(idToken);
       return {
         success: true,

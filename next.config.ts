@@ -9,7 +9,14 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   images:{
-    domains:['lh3.googleusercontent.com'],   // google profile image domain
+      remotePatterns:[
+        {
+          protocol: 'https',
+          hostname: 'lh3.googleusercontent.com',
+          port: '',
+          pathname: '/**',
+        }
+      ]
   },
   
 };
